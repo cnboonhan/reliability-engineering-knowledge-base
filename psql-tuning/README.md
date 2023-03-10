@@ -18,6 +18,6 @@ crc console --credentials
 oc new-project psql-tuning
 
 # Deploy 
-oc apply -f onboarding.template.yaml
+oc apply -f onboarding.openshift.yaml
 oc process psql-tuning-onboarding | oc apply -f -
 ```
