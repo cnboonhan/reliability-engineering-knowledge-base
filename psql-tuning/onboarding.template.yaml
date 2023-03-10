@@ -23,6 +23,35 @@ metadata:
 
 objects:
   - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: cluster-monitoring-config
+      namespace: openshift-monitoring
+    data:
+      config.yaml: |
+        enableUserWorkload: true
+        prometheusK8s:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: fast
+              volumeMode: Filesystem
+              resources:
+                requests:
+                  storage: 40Gi
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: user-workload-monitoring-config
+      namespace: openshift-user-workload-monitoring
+    data:
+      config.yaml: |
+        prometheus:
+          retention: 24h
+          resources:
+            requests:
+              cpu: 200m
+              memory: 2Gi
+  - apiVersion: v1
     kind: Secret
     metadata:
       annotations:
