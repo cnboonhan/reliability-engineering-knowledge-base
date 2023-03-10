@@ -26,4 +26,10 @@ oc process psql-tuning-onboarding | oc apply -f -
 
 # Run pgbench to run benchmark and profile performance
 oc apply -f pgbench.yaml
+
+# Run jupyter to run interactive Experiments
+oc apply -f jupyter.yaml
+
+# Port forward pods to localhost to access them
+oc port-forward POD_NAME PORT
 ```

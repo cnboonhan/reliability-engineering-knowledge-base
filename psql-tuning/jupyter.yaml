@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod 
+metadata:
+  labels:
+    name: jupyter
+  name: jupyter
+  namespace: psql-tuning
+spec:
+  containers:
+    - image: registry.hub.docker.com/jupyter/datascience-notebook:latest
+      name: jupyter-pod
+      env:
+      - name: PG_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: postgresql
+            key: database-name
+      - name: PG_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: postgresql
+            key: database-user
+      - name: PG_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: postgresql
+            key: database-password
+      - name: PG_HOSTNAME
+        value: postgresql.psql-tuning
+  restartPolicy: OnFailure
+status: {}
