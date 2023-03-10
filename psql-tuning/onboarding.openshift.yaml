@@ -4,13 +4,10 @@ labels:
   template: psql-tuning-onboarding
 message: |-
   The following service(s) have been created in your project: ${DATABASE_SERVICE_NAME}.
-
          Username: ${POSTGRESQL_USER}
          Password: ${POSTGRESQL_PASSWORD}
     Database Name: ${POSTGRESQL_DATABASE}
    Connection URL: postgresql://${DATABASE_SERVICE_NAME}:5432/
-
-  For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/.
 metadata:
   annotations:
     description: |-
@@ -23,35 +20,6 @@ metadata:
 
 objects:
   - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: cluster-monitoring-config
-      namespace: openshift-monitoring
-    data:
-      config.yaml: |
-        enableUserWorkload: true
-        prometheusK8s:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: fast
-              volumeMode: Filesystem
-              resources:
-                requests:
-                  storage: 40Gi
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: user-workload-monitoring-config
-      namespace: openshift-user-workload-monitoring
-    data:
-      config.yaml: |
-        prometheus:
-          retention: 24h
-          resources:
-            requests:
-              cpu: 200m
-              memory: 2Gi
-  - apiVersion: v1
     kind: Secret
     metadata:
       annotations:
@@ -63,6 +31,7 @@ objects:
       database-name: ${POSTGRESQL_DATABASE}
       database-password: ${POSTGRESQL_PASSWORD}
       database-user: ${POSTGRESQL_USER}
+
   - apiVersion: v1
     kind: Service
     metadata:
@@ -82,6 +51,7 @@ objects:
       type: ClusterIP
     status:
       loadBalancer: {}
+
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
@@ -92,6 +62,7 @@ objects:
       resources:
         requests:
           storage: ${VOLUME_CAPACITY}
+
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
     metadata:
