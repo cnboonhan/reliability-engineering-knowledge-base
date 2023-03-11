@@ -147,6 +147,34 @@ objects:
         - type: ConfigChange
     status: {}
 
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      name: psql-tuning 
+      namespace: psql-tuning
+
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: psql-tuning-build
+      labels:
+        app: psql-tuning-build
+    spec:
+      source:
+        type: binary
+        binary: {}
+      strategy:
+        type: docker
+        dockerStrategy:
+          dockerfilePath: Dockerfile
+      output:
+        to:
+          kind: ImageStreamTag
+          name: psql-tuning:latest
+          namespace: psql-tuning
+      triggers:
+        - type: ImageChange
+
 parameters:
   - description: Maximum amount of memory the container can use.
     displayName: Memory Limit

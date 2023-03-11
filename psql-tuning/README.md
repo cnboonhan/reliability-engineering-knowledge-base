@@ -20,4 +20,7 @@ oc new-project psql-tuning
 # Deploy 
 oc apply -f onboarding.openshift.yaml
 oc process psql-tuning-onboarding | oc apply -f -
+
+# Build lab image and deploy
+oc start-build psql-tuning-build  --from-dir=.
 ```
