@@ -28,4 +28,7 @@ oc start-build psql-tuning-build  --from-dir=.
 
 # Port forward jupyterlab to access
 oc port-forward $(oc get pods -l deploymentconfig=jupyterlab -o name) 8888 --address=0.0.0.0
+
+# generate database report using pgbadger
+pgbadger /var/lib/pgsql/data/userdata/pg_log/postgresql.log 
 ```
