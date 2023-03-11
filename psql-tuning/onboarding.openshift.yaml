@@ -21,11 +21,11 @@ metadata:
 objects:
   - apiVersion: v1
     kind: ConfigMap
-    metadata: 
+    metadata:
       name: ${DATABASE_SERVICE_NAME}-config
     data:
       postgresql.conf: |
-        shared_buffers = '56B'
+        shared_buffers = '256B'
         log_directory = 'pg_log'
         log_filename = 'postgresql.log'
         logging_collector = 'on'
@@ -83,7 +83,7 @@ objects:
       name: ${DATABASE_SERVICE_NAME}
     spec:
       accessModes:
-        - ReadWriteMany
+        - ReadWriteOnce
       resources:
         requests:
           storage: ${VOLUME_CAPACITY}
@@ -152,7 +152,7 @@ objects:
               volumeMounts:
                 - mountPath: /var/lib/pgsql/data
                   name: ${DATABASE_SERVICE_NAME}-data
-                - mountPath: /var/lib/pgsql/data/userdata/postgresql.conf
+                - mountPath: /opt/app-root/src/postgresql-cfg/postgresql.conf
                   subPath: postgresql.conf
                   name: ${DATABASE_SERVICE_NAME}-config
           dnsPolicy: ClusterFirst
@@ -181,7 +181,7 @@ objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
     metadata:
-      name: psql-tuning 
+      name: psql-tuning
       namespace: psql-tuning
 
   - apiVersion: build.openshift.io/v1
