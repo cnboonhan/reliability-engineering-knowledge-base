@@ -37,7 +37,14 @@ spec:
           ports:
             - containerPort: 8888
               protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/pgsql/data
+              name: postgresql-data
           restartPolicy: Always
+      volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
   triggers:
     - imageChangeParams:
         automatic: true
