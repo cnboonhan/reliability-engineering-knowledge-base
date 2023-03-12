@@ -10,10 +10,14 @@ https://access.redhat.com/documentation/en-us/red_hat_openshift_local/2.5/html/g
 crc config set enable-cluster-monitoring true
 crc config set memory 14500
 crc config set disk-size 100
+crc config set kubeadmin-password kubeadmin
 crc start
 
-# Get credentials and login
-crc console --credentials
+# Add DNS routes for Lab Portal
+echo "$(crc ip) jupyter-route-psql-tuning.apps-crc.testing" | sudo tee -a | /etc/hosts
+
+# Login
+oc login -u kubeadmin -p kubeadmin https://api.crc.testing:6443
 
 # Create Project
 oc new-project psql-tuning
@@ -26,5 +30,6 @@ oc apply -f jupyter.openshift.yaml
 # Build lab image and deploy
 oc start-build psql-tuning-build  --from-dir=.
 
-# Access labs at http://jupyter-route-psql-tuning.apps-crc.testing/lab
+# Access labs and Console
+google-chrome https://console-openshift-console.apps-crc.testing http://jupyter-route-psql-tuning.apps-crc.testing/lab
 ```
