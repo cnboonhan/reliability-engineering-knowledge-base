@@ -10,4 +10,6 @@ USER 1000
 
 RUN echo 'PGPASSWORD=$POSTGRESQL_PASSWORD psql -U $POSTGRESQL_USER -h $POSTGRESQL_HOSTNAME' >> /home/$NB_USER/.bashrc
 
+COPY notebooks/ /home/$NB_USER/notebooks/
+
 ENV NOTEBOOK_ARGS="--ServerApp.password='' --ServerApp.token='' --ServerApp.ip='0.0.0.0' --ServerApp.root_dir='/var/lib/pgsql/data'"
