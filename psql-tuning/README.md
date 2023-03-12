@@ -33,3 +33,9 @@ oc start-build psql-tuning-build  --from-dir=.
 # Access labs and Console
 google-chrome https://console-openshift-console.apps-crc.testing http://jupyter-route-psql-tuning.apps-crc.testing/lab http://pghero-route-psql-tuning.apps-crc.testing
 ```
+
+## Helpful Commands
+```
+# Copy out notebooks folder in pvc
+oc rsync $(oc get pod --selector=name=jupyterlab -o name):/var/lib/pgsql/data/notebooks . 
+```
