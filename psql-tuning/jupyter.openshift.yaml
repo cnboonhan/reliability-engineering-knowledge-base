@@ -68,7 +68,6 @@ metadata:
 spec:
   ports:
     - name: jupyterlab
-      #nodePort: 8888
       port: 8888
       protocol: TCP
       targetPort: 8888

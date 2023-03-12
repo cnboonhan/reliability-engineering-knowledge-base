@@ -14,7 +14,7 @@ crc config set kubeadmin-password kubeadmin
 crc start
 
 # Add DNS routes for Lab Portal
-echo "$(crc ip) jupyter-route-psql-tuning.apps-crc.testing" | sudo tee -a | /etc/hosts
+echo "$(crc ip) jupyter-route-psql-tuning.apps-crc.testing pghero-route-psql-tuning.apps-crc.testing" | sudo tee -a | /etc/hosts
 
 # Login
 oc login -u kubeadmin -p kubeadmin https://api.crc.testing:6443
@@ -31,5 +31,5 @@ oc apply -f jupyter.openshift.yaml
 oc start-build psql-tuning-build  --from-dir=.
 
 # Access labs and Console
-google-chrome https://console-openshift-console.apps-crc.testing http://jupyter-route-psql-tuning.apps-crc.testing/lab
+google-chrome https://console-openshift-console.apps-crc.testing http://jupyter-route-psql-tuning.apps-crc.testing/lab http://pghero-route-psql-tuning.apps-crc.testing
 ```

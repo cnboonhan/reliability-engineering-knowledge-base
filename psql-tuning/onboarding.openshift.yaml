@@ -43,6 +43,8 @@ objects:
         log_lock_waits = on
         log_temp_files = 0
         log_autovacuum_min_duration = 0
+        shared_preload_libraries = 'pg_stat_statements'
+        pg_stat_statements.track = all
 
   - apiVersion: v1
     kind: Secret
@@ -51,11 +53,13 @@ objects:
         template.openshift.io/expose-database_name: "{.data['database-name']}"
         template.openshift.io/expose-password: "{.data['database-password']}"
         template.openshift.io/expose-username: "{.data['database-user']}"
+        template.openshift.io/expose-database_uri: "{.data['database-uri']}"
       name: ${DATABASE_SERVICE_NAME}
     stringData:
       database-name: ${POSTGRESQL_DATABASE}
       database-password: ${POSTGRESQL_PASSWORD}
       database-user: ${POSTGRESQL_USER}
+      database-uri: postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@${DATABASE_SERVICE_NAME}.psql-tuning:5432/${POSTGRESQL_DATABASE}
 
   - apiVersion: v1
     kind: Service
@@ -205,6 +209,75 @@ objects:
           namespace: psql-tuning
       triggers:
         - type: ImageChange
+
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      namespace: psql-tuning
+      name: pghero
+    spec:
+      replicas: 1
+      selector:
+        name: pghero
+      template:
+        metadata:
+          labels:
+            name: pghero
+        spec:
+          containers:
+            - name: pghero
+              image: registry.hub.docker.com/ankane/pghero:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: database-uri
+                      name: ${DATABASE_SERVICE_NAME}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              restartPolicy: Always
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: pghero
+    spec:
+      ports:
+        - name: pghero
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      selector:
+        name: pghero
+      sessionAffinity: None
+      type: ClusterIP
+    status:
+      loadBalancer: {}
+
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: pghero-route
+      namespace: psql-tuning
+    spec:
+      host: pghero-route-psql-tuning.apps-crc.testing
+      to:
+        kind: Service
+        name: pghero
+        weight: 100
+      port:
+        targetPort: pghero
+      wildcardPolicy: None
+    status:
+      ingress:
+        - host: pghero-route-psql-tuning.apps-crc.testing
+          routerName: default
+          conditions:
+            - type: Admitted
+              status: "True"
+          wildcardPolicy: None
 
 parameters:
   - description: Maximum amount of memory the container can use.
