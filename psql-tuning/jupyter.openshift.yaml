@@ -5,16 +5,16 @@ metadata:
   name: jupyterlab
 spec:
   replicas: 1
-  selector: 
+  selector:
     name: jupyterlab
   template:
     metadata:
-      labels: 
+      labels:
         name: jupyterlab
     spec:
       containers:
         - name: jupyterlab
-          image: ' '
+          image: " "
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRESQL_USER
@@ -59,3 +59,46 @@ spec:
     - type: ConfigChange
   strategy:
     type: Recreate
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyterlab
+spec:
+  ports:
+    - name: jupyterlab
+      #nodePort: 8888
+      port: 8888
+      protocol: TCP
+      targetPort: 8888
+  selector:
+    name: jupyterlab
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: jupyter-route
+  namespace: psql-tuning
+spec:
+  host: jupyter-route-psql-tuning.apps-crc.testing
+  to:
+    kind: Service
+    name: jupyterlab
+    weight: 100
+  port:
+    targetPort: jupyterlab
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: jupyter-route-psql-tuning.apps-crc.testing
+      routerName: default
+      conditions:
+        - type: Admitted
+          status: 'True'
+      wildcardPolicy: None

@@ -7,4 +7,4 @@ RUN apt install pgbadger python3 python3-pip postgresql-client -y
 RUN chgrp -Rf root /home/$NB_USER && chmod -Rf g+w /home/$NB_USER
 USER 1000
 
-ENV NOTEBOOK_ARGS="--ServerApp.password='' --ServerApp.token=''"
+ENV NOTEBOOK_ARGS="--ServerApp.password='' --ServerApp.token='' --ServerApp.ip='0.0.0.0'"

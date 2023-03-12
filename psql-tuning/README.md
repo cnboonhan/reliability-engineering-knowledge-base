@@ -26,9 +26,5 @@ oc apply -f jupyter.openshift.yaml
 # Build lab image and deploy
 oc start-build psql-tuning-build  --from-dir=.
 
-# Port forward jupyterlab to access
-oc port-forward $(oc get pods -l deploymentconfig=jupyterlab -o name) 8888 --address=0.0.0.0
-
-# generate database report using pgbadger
-pgbadger /var/lib/pgsql/data/userdata/pg_log/postgresql.log 
+# Access labs at http://jupyter-route-psql-tuning.apps-crc.testing/lab
 ```
