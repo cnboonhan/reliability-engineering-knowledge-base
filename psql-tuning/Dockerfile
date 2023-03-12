@@ -8,4 +8,4 @@ RUN pip3 install faker psycopg2-binary
 RUN chgrp -Rf root /home/$NB_USER && chmod -Rf g+w /home/$NB_USER
 USER 1000
 
-ENV NOTEBOOK_ARGS="--ServerApp.password='' --ServerApp.token='' --ServerApp.ip='0.0.0.0' --ServerApp.root_dir='/var/lig/pgsql/data'"
+ENV NOTEBOOK_ARGS="--ServerApp.password='' --ServerApp.token='' --ServerApp.ip='0.0.0.0' --ServerApp.root_dir='/var/lib/pgsql/data'"
