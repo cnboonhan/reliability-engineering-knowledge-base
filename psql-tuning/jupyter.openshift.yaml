@@ -5,6 +5,7 @@ metadata:
   name: jupyterlab
 spec:
   replicas: 1
+  maxUnavailable: 0
   selector:
     name: jupyterlab
   template:
@@ -16,6 +17,13 @@ spec:
         - name: jupyterlab
           image: " "
           imagePullPolicy: IfNotPresent
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /lab
+              port: 8888
+            initialDelaySeconds: 10
+            periodSeconds: 10
           env:
             - name: POSTGRESQL_USER
               valueFrom:
@@ -58,7 +66,7 @@ spec:
       type: ImageChange
     - type: ConfigChange
   strategy:
-    type: Recreate
+    type: Rolling
 
 ---
 apiVersion: v1
