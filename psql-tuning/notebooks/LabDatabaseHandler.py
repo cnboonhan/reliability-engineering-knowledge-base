@@ -54,20 +54,20 @@ class LabDatabaseHandler:
     def commit(self):
         self.conn.commit()
     
-    def execute(self, sql, repeat=1):
-        time_taken = self.execute_only(sql, repeat)
+    def execute(self, sql, samples=1):
+        time_taken = self.execute_only(sql, samples)
         self.conn.commit()
         return time_taken
     
-    def execute_only(self, sql, repeat=1):
+    def execute_only(self, sql, samples=1):
         try:
-            repeat_results = []
-            for i in range(repeat):
+            samples_results = []
+            for i in range(samples):
                 start_time = time.time()
                 self.cur.execute(sql)
                 seconds = time.time() - start_time
-                repeat_results.append(round(seconds*1000))
-            time_taken = sum(repeat_results) / len(repeat_results)
+                samples_results.append(round(seconds*1000))
+            time_taken = sum(samples_results) / len(samples_results)
             return self.LabDatabaseHandlerExecutionResponse(time_taken)
         except Exception as e:
             print(e)

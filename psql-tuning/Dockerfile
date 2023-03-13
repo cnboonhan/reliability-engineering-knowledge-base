@@ -2,8 +2,8 @@ FROM registry.hub.docker.com/jupyter/minimal-notebook:latest
 
 USER 0
 RUN apt update
-RUN apt install pgbadger python3 python3-pip postgresql-client python3-matplotlib -y
-RUN pip3 install faker psycopg2-binary tqdm locust
+RUN apt install pgbadger python3 python3-pip postgresql-client -y
+RUN pip3 install faker psycopg2-binary tqdm locust matplotlib 
 
 RUN chgrp -Rf root /home/$NB_USER && chmod -Rf g+w /home/$NB_USER
 USER 1000
