@@ -32,6 +32,9 @@ class LabDatabaseHandler:
         self.fake = Faker()
         self.fake.unique.clear()
     
+    def get_conn(self):
+        return self.conn
+    
     def reset_logs(self):
         f = open(f"{self.pg_log_path}/{self.pg_log_name}", "w")
         f.write("")
@@ -51,12 +54,12 @@ class LabDatabaseHandler:
     def commit(self):
         self.conn.commit()
     
-    def execute_and_commit(self, sql, repeat=1):
-        time_taken = self.execute(sql, repeat)
+    def execute(self, sql, repeat=1):
+        time_taken = self.execute_only(sql, repeat)
         self.conn.commit()
         return time_taken
     
-    def execute(self, sql, repeat=1):
+    def execute_only(self, sql, repeat=1):
         try:
             repeat_results = []
             for i in range(repeat):
